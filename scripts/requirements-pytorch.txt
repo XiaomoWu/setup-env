@@ -1,0 +1,6 @@
+# pytorch related
+torch
+torchvision
+transformers
+lightning
+deepspeed

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # source functions
-source functions.sh
+source scripts/functions.sh
 
 
 # install python interpreter
@@ -61,15 +61,12 @@ install_python_package() {
     local package
 
     # install requirements.txt
-    $python_interpreter_path -m pip install -r requirements.txt
+    $python_interpreter_path -m pip install -r scripts/requirements.txt
 
     # install pytorch-related packages
     if [[ "$install_pytorch" == "yes" ]]; then
-        # install pytorch
-        $python_interpreter_path -m pip install torch torchvision torchaudio
-
-        # install deepspeed
-        $python_interpreter_path -m pip install deepspeed
+        # install pytorch and related packages
+        $python_interpreter_path -m pip install -r scripts/requirements-torch.txt
     fi
 
 }
@@ -84,6 +81,37 @@ config_jupyter() {
     sed -i "/c.InteractiveShell.ast_node_interactivity/ { s/^# //; s/'last_expr'/'all'/; }" "$ipython_config_path"
 }
 
+# nicer prompt
+# the nicer prompt is python-env specific, i.e., it's only activated when the chosen python env is activated
+nicer_prompt() {
+    # delete .bash_prompt if it exists
+    rm -f "$HOME/.bash_prompt"
+
+    # add the following lines to .bash_prompt
+    lines='BRACKET_COLOR="\[\033[01;32m\]"  # \[\033[38;5;35m\] is the original color
+        CLOCK_COLOR="\[\033[01;32m\]"
+        JOB_COLOR="\[\033[01;32m\]"
+        PATH_COLOR="\[\033[38;5;33m\]"
+        LINE_COLOR="\[\033[38;5;248m\]"
+
+        # uncommend if you want to show "number of suspended jobs"
+        # tty -s && export PS1="$LINE_COLOR$LINE_UPPER_CORNER$LINE_STRAIGHT$LINE_STRAIGHT$BRACKET_COLOR$VIRTUAL_ENV_PROMPT[$CLOCK_COLOR\t$BRACKET_COLOR]$LINE_COLOR$LINE_STRAIGHT$BRACKET_COLOR[$JOB_COLOR\j$BRACKET_COLOR]$LINE_COLOR$LINE_STRAIGHT$BRACKET_COLOR[\H:\]$PATH_COLOR\w$BRACKET_COLOR]\n$LINE_COLOR$LINE_BOTTOM_CORNER$LINE_STRAIGHT$LINE_BOTTOM$END_CHARACTER\[$(tput sgr0)\] "
+
+        tty -s && export PS1="$LINE_COLOR┌──$BRACKET_COLOR$VIRTUAL_ENV_PROMPT[$CLOCK_COLOR\t$BRACKET_COLOR]$LINE_COLOR-$BRACKET_COLOR[\H:\]$PATH_COLOR\w$BRACKET_COLOR]
+        $LINE_COLOR└──|\[$(tput sgr0)\] "
+        '
+    # remove leading whitespace
+    lines=$(echo "$lines" | sed 's/^[ \t]*//')
+
+    # add the lines to .bash_prompt
+    echo "$lines" > "$HOME/.bash_prompt"
+
+    # source .bash_prompt in bin/activate
+    append_line "source $HOME/.bash_prompt" "$python_activate_path"
+
+    source "$HOME/.bashrc"
+
+}
 
 #--- get variables ---#
 
@@ -98,6 +126,8 @@ python_version_long="python${python_version}"
 python_version2=$($python_version_long --version)  # e.g, Python 3.11.5
 python_version2="${python_version2//Python /}"  # remove "Python " from the string
 python_version2="${python_version2/./}"  # "3.11.5" -> "311.5
+echo "$python_version2"
+
 
 # python env suffix (e.g., py311.5-"base")
 get_user_input "Please enter the python env suffix. The suffix should not contain any special characters (e.g., - or _):" "base"
@@ -134,3 +164,5 @@ install_python_package
 #--- config jupyter ---#
 config_jupyter
 
+#--- nicer prompt ---#
+nicer_prompt

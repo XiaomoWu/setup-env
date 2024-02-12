@@ -1,39 +1,9 @@
 #!/bin/bash
 
 # source general functions
-source functions.sh
+source scripts/functions.sh
 
 #--- script-specific functions ---#
-nicer_prompt() {
-    # delete .bash_prompt if it exists
-    rm -f "$HOME/.bash_prompt"
-
-    # add the following lines to .bash_prompt
-    lines='BRACKET_COLOR="\[\033[01;32m\]"  # \[\033[38;5;35m\] is the original color
-        CLOCK_COLOR="\[\033[01;32m\]"
-        JOB_COLOR="\[\033[01;32m\]"
-        PATH_COLOR="\[\033[38;5;33m\]"
-        LINE_COLOR="\[\033[38;5;248m\]"
-
-        # uncommend if you want to show "number of suspended jobs"
-        # tty -s && export PS1="$LINE_COLOR$LINE_UPPER_CORNER$LINE_STRAIGHT$LINE_STRAIGHT$BRACKET_COLOR$VIRTUAL_ENV_PROMPT[$CLOCK_COLOR\t$BRACKET_COLOR]$LINE_COLOR$LINE_STRAIGHT$BRACKET_COLOR[$JOB_COLOR\j$BRACKET_COLOR]$LINE_COLOR$LINE_STRAIGHT$BRACKET_COLOR[\H:\]$PATH_COLOR\w$BRACKET_COLOR]\n$LINE_COLOR$LINE_BOTTOM_CORNER$LINE_STRAIGHT$LINE_BOTTOM$END_CHARACTER\[$(tput sgr0)\] "
-
-        tty -s && export PS1="$LINE_COLOR┌──$BRACKET_COLOR$VIRTUAL_ENV_PROMPT[$CLOCK_COLOR\t$BRACKET_COLOR]$LINE_COLOR-$BRACKET_COLOR[\H:\]$PATH_COLOR\w$BRACKET_COLOR]
-        $LINE_COLOR└──|\[$(tput sgr0)\] "
-        '
-    # remove leading whitespace
-    lines=$(echo "$lines" | sed 's/^[ \t]*//')
-
-    # add the lines to .bash_prompt
-    echo "$lines" > "$HOME/.bash_prompt"
-
-    # source .bash_prompt in bin/activate
-    add_line "source $HOME/.bash_prompt" "$python_activate_path"
-
-    source "$HOME/.bashrc"
-
-}
-
 tmux_config() {
     # delete .bash_prompt if it exists
     rm -f "$HOME/.tmux.conf"
@@ -80,10 +50,9 @@ tmux_config() {
 
     # add the lines to .tmux.conf
     echo "$lines" > "$HOME/.tmux.conf"
-}
 
-#--- nicer prompt ---#
-nicer_prompt
+    echo "tmux config done!"
+}
 
 #--- tmux config ---#
 tmux_config

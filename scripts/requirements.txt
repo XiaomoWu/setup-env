@@ -6,9 +6,3 @@ pyarrow
 seaborn
 tqdm
 aiofiles
-
-# pytorch related
-torch
-torchvision
-transformers
-lightning
