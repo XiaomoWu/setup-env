@@ -1,0 +1,5 @@
+# ignore directories
+*DS_Store
+@eaDir
+
+# ignore files
