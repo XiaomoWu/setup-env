@@ -9,3 +9,4 @@ seaborn
 tqdm
 aiofiles
 scikit-learn
+pyreadstat
