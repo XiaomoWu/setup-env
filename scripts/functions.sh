@@ -69,5 +69,5 @@ append_line() {
 update_system() {
     sudo apt-get update
     sudo apt-get upgrade -y
-    sudo apt-get install libaio-dev -y
+    sudo apt-get install libaio-dev libxml2-dev -y
 }

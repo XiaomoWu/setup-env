@@ -1,0 +1,10 @@
+arrow
+data.talbe
+devtools
+ggplot2
+hms
+IRkernel
+languageserver
+lubridate
+pryr
+stringr
