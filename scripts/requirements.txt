@@ -8,6 +8,7 @@ pandas
 pyarrow
 pyreadstat
 python-dotenv
+rich
 seaborn
 scikit-learn
 tqdm
